@@ -22,20 +22,20 @@ exports.createPages = ( { actions, graphql }) => {
     
     const { createPage } = actions
 
-    return getArticles = makeRequest(
+    const getArticles = makeRequest(
         graphql,
         `{
             allStrapiArticle {
                 edges {
-                node {
-                    id
-                }
+                    node {
+                        id
+                    }
                 }
             }
-    }`)
-    .then( result => {
+        }`
+    ).then( result => {
         // Create pages for each article
-        result.data.allStrapiArticle.edges.forEach( ({node}) => {
+        result.data.allStrapiArticle.edges.forEach( ( {node} ) => {
             createPage({
                 path: `/${node.id}`,
                 component: path.resolve(`src/templates/article.js`),
@@ -45,5 +45,33 @@ exports.createPages = ( { actions, graphql }) => {
             })
         })
     })  
+
+
+    const getAuthors = makeRequest(
+        graphql,
+        `{
+            allStrapiUser {
+              edges {
+                node {
+                  id
+                }
+              }
+            }
+        }`
+    ).then( result => {
+        result.data.allStrapiUser.edges.forEach( ( {node} ) => {
+            createPage({
+                path: `/authors/${node.id}`,
+                component: path.resolve(`src/templates/author.js`),
+                context: {
+                    id: node.id
+                }
+            })
+        })
+    })
+
+    return Promise.all( [ getArticles, getAuthors ] )
+
+
 
 }

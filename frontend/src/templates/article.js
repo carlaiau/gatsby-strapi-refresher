@@ -6,8 +6,9 @@ import Layout from '../components/layout'
 const ArticleTemplate = ( { data } ) => (
     <Layout>
         <h1>{data.strapiArticle.title}</h1>
+        <Img fluid={data.strapiArticle.image.childImageSharp.fluid}/>
         <p>by <Link to={`/authors/User_${data.strapiArticle.author.id}`}>{data.strapiArticle.author.username}</Link></p>
-        <Img fixed={data.strapiArticle.image.childImageSharp.fixed}/>
+        
         <p>{data.strapiArticle.content}</p>
 
     </Layout>
@@ -22,8 +23,8 @@ export const query = graphql`
       content
       image {
           childImageSharp {
-            fixed(width: 200, height: 125) {
-              ...GatsbyImageSharpFixed
+            fluid(maxWidth: 960) {
+              ...GatsbyImageSharpFluid
             }
           }
         }
